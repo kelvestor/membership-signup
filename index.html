@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Church Membership Form</title>
+<style>
+  :root { --ink: #1b1f2a; --muted: #5b6270; --line: #c9ced8; --accent: #1f4fb4; --bad: #b42318; --ok: #137a3e; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; color: var(--ink); background: #f5f6f8; line-height: 1.45; }
+  main { max-width: 680px; margin: 0 auto; padding: 24px 16px 48px; }
+  h1 { font-size: 1.5rem; margin: 0 0 4px; }
+  h2 { font-size: 1.05rem; margin: 28px 0 10px; padding-bottom: 6px; border-bottom: 1px solid var(--line); }
+  p.lead { color: var(--muted); margin: 0 0 16px; }
+  .card { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
+  label { display: block; font-weight: 600; font-size: 0.95rem; margin: 14px 0 6px; }
+  label .hint { font-weight: 400; color: var(--muted); font-size: 0.85rem; }
+  input[type=text], input[type=email], input[type=tel], input[type=date], select {
+    width: 100%; padding: 10px 11px; font: inherit; border: 1px solid var(--line); border-radius: 8px; background: #fff; color: var(--ink);
+  }
+  input:focus, select:focus, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .choice { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 6px; }
+  .choice label { font-weight: 400; margin: 0; display: flex; gap: 6px; align-items: center; }
+  .check { display: flex; gap: 10px; align-items: flex-start; margin: 14px 0; font-weight: 400; }
+  .check input { margin-top: 4px; width: 18px; height: 18px; flex: none; }
+  .hidden { display: none !important; }
+  #sig-wrap { border: 1px dashed #9aa3b2; border-radius: 8px; background: #fff; }
+  #sig-pad { width: 100%; height: 180px; display: block; touch-action: none; border-radius: 8px; }
+  .row-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 6px; color: var(--muted); font-size: 0.85rem; }
+  button { font: inherit; border: 0; border-radius: 8px; padding: 10px 16px; cursor: pointer; }
+  button.secondary { background: #eef1f6; color: var(--ink); }
+  button.primary { background: var(--accent); color: #fff; font-weight: 600; width: 100%; padding: 13px; font-size: 1rem; margin-top: 22px; }
+  button:disabled { opacity: 0.6; cursor: wait; }
+  .notice { font-size: 0.85rem; color: var(--muted); margin-top: 12px; }
+  #status { margin-top: 14px; font-weight: 600; min-height: 1.4em; }
+  #status.error { color: var(--bad); }
+  #status.ok { color: var(--ok); }
+  #download { margin-top: 10px; }
+  .field-error { color: var(--bad); font-size: 0.85rem; margin: 4px 0 0; }
+  .honeypot { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Church Membership Form</h1>
+  <p class="lead">Fill in your details, sign below, and submit. A signed copy will be emailed to you and to the church.</p>
+
+  <form id="membership" novalidate>
+    <div class="card">
+      <h2 style="margin-top:0">Personal details</h2>
+
+      <label for="name">Full name <span class="hint">(block letters)</span></label>
+      <input type="text" id="name" autocomplete="name" required>
+
+      <label for="address">Address</label>
+      <input type="text" id="address" autocomplete="street-address" required>
+
+      <label for="contact">Contact number (HP/HM)</label>
+      <input type="tel" id="contact" autocomplete="tel" required>
+
+      <label for="email">Email <span class="hint">(a signed copy will be sent here)</span></label>
+      <input type="email" id="email" autocomplete="email" required>
+
+      <label for="dob">Date of birth</label>
+      <input type="date" id="dob" required>
+
+      <label for="marital">Marital status</label>
+      <select id="marital" required>
+        <option value="">Select</option>
+        <option>Married</option>
+        <option>Single</option>
+        <option>Widowed</option>
+        <option>Divorced</option>
+        <option value="Others">Others (please specify)</option>
+      </select>
+      <input type="text" id="marital_other" class="hidden" placeholder="Please specify" style="margin-top:8px">
+
+      <label for="family">Family members attending 3:16 Church <span class="hint">(put N.A. if not applicable)</span></label>
+      <input type="text" id="family" value="N.A." required>
+    </div>
+
+    <div class="card" style="margin-top:16px">
+      <h2 style="margin-top:0">Baptism details</h2>
+
+      <label>Have you been baptised?</label>
+      <div class="choice" id="baptised-choice">
+        <label><input type="radio" name="baptised" value="YES" required> Yes</label>
+        <label><input type="radio" name="baptised" value="NO"> No</label>
+      </div>
+
+      <div id="baptised-yes" class="hidden">
+        <label for="baptism_year">Year of baptism</label>
+        <input type="text" id="baptism_year" inputmode="numeric" maxlength="4" placeholder="e.g. 2005">
+
+        <label for="baptism_church">Name of church you were baptised in</label>
+        <input type="text" id="baptism_church">
+      </div>
+
+      <div id="baptised-no" class="hidden">
+        <label>Would you like to be baptised in 3:16 Church?</label>
+        <div class="choice">
+          <label><input type="radio" name="baptism_interest" value="YES"> Yes</label>
+          <label><input type="radio" name="baptism_interest" value="NO"> No</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px">
+      <h2 style="margin-top:0">Declaration</h2>
+
+      <label class="check"><input type="checkbox" id="agree" required>
+        <span>I agree to sign up as 3:16 Church member and I will abide to the church constitution.</span></label>
+
+      <label class="check"><input type="checkbox" id="soft_copy">
+        <span>I would like to have a soft copy of the constitution.</span></label>
+
+      <label>Signature</label>
+      <div id="sig-wrap">
+        <canvas id="sig-pad" aria-label="Signature pad: draw your signature here"></canvas>
+      </div>
+      <div class="row-actions">
+        <span>Sign with your finger or mouse.</span>
+        <button type="button" class="secondary" id="sig-clear">Clear</button>
+      </div>
+
+      <label class="check" style="margin-top:18px"><input type="checkbox" id="consent" required>
+        <span>I consent to the church collecting and using the personal details above to process my membership application, and to email the completed form to me and to the church.</span></label>
+      <p class="notice">Your details are used only for this membership application. Date signed: <span id="today"></span></p>
+    </div>
+
+    <div class="honeypot" aria-hidden="true">
+      <label for="website">Website (leave blank)</label>
+      <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+    </div>
+
+    <button type="submit" class="primary" id="submit">Submit membership form</button>
+    <p id="status" role="status"></p>
+    <div id="download-wrap"></div>
+  </form>
+</main>
+
+<!-- Pinned versions (MIT). signature_pad 4.1.7, pdf-lib 1.17.1 -->
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+<script src="fill-pdf.js"></script>
+<script>
+(function () {
+  // Set these two values before publishing. See README.md.
+  const CONFIG = {
+    APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbzXtHK7TJLxmRhmTtHV3xjX6EwqV6OIllwDzy1qHRS56PNvHv6zVhPGNE6zMb7vIzzA/exec",
+    TOKEN: "9SHGJ0vnHs4dE-4bZnsrwAr-OdCl4NHH",
+  };
+
+  const $ = (id) => document.getElementById(id);
+  const form = $("membership");
+  const statusEl = $("status");
+  const submitBtn = $("submit");
+
+  // ---- Signature pad -------------------------------------------------------
+  const canvas = $("sig-pad");
+  const pad = new SignaturePad(canvas, { minWidth: 0.8, maxWidth: 2.4, backgroundColor: "rgba(0,0,0,0)" });
+
+  function resizeCanvas() {
+    const ratio = Math.max(window.devicePixelRatio || 1, 1);
+    const wasEmpty = pad.isEmpty();
+    canvas.width = canvas.offsetWidth * ratio;
+    canvas.height = canvas.offsetHeight * ratio;
+    canvas.getContext("2d").scale(ratio, ratio);
+    if (wasEmpty) pad.clear();
+  }
+  window.addEventListener("resize", resizeCanvas);
+  resizeCanvas();
+  $("sig-clear").addEventListener("click", () => pad.clear());
+
+  // ---- Conditional fields --------------------------------------------------
+  const maritalSel = $("marital");
+  maritalSel.addEventListener("change", () => {
+    $("marital_other").classList.toggle("hidden", maritalSel.value !== "Others");
+  });
+
+  const baptisedRadios = document.querySelectorAll('input[name="baptised"]');
+  baptisedRadios.forEach((r) => r.addEventListener("change", () => {
+    const yes = document.querySelector('input[name="baptised"]:checked').value === "YES";
+    $("baptised-yes").classList.toggle("hidden", !yes);
+    $("baptised-no").classList.toggle("hidden", yes);
+  }));
+
+  // Today's date, Singapore time, dd/mm/yyyy
+  const now = new Date();
+  const sgParts = new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Singapore", day: "2-digit", month: "2-digit", year: "numeric" }).formatToParts(now);
+  const part = (t) => sgParts.find((p) => p.type === t).value;
+  const todayDMY = `${part("day")}/${part("month")}/${part("year")}`;
+  $("today").textContent = todayDMY;
+
+  // ---- Helpers -------------------------------------------------------------
+  const val = (id) => $(id).value.trim();
+  const upper = (s) => s.toUpperCase();
+  const radio = (name) => { const r = document.querySelector(`input[name="${name}"]:checked`); return r ? r.value : ""; };
+  const isEmail = (s) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);
+
+  function setStatus(msg, kind) {
+    statusEl.textContent = msg;
+    statusEl.className = kind || "";
+  }
+
+  function dobToDMY(iso) {
+    const [y, m, d] = iso.split("-");
+    return `${d}/${m}/${y}`;
+  }
+
+  function makeRef() {
+    const stamp = new Date().toISOString().replace(/[-:T.Z]/g, "").slice(0, 14);
+    const rnd = Math.random().toString(36).slice(2, 6).toUpperCase();
+    return `MEM-${stamp}-${rnd}`;
+  }
+
+  function validate() {
+    const errors = [];
+    if (!val("name")) errors.push("Full name");
+    if (!val("address")) errors.push("Address");
+    if (!val("contact")) errors.push("Contact number");
+    if (!isEmail(val("email"))) errors.push("A valid email");
+    if (!val("dob")) errors.push("Date of birth");
+    if (!maritalSel.value) errors.push("Marital status");
+    if (maritalSel.value === "Others" && !val("marital_other")) errors.push("Marital status (please specify)");
+    if (!val("family")) errors.push("Family members attending (or N.A.)");
+    const baptised = radio("baptised");
+    if (!baptised) errors.push("Baptism question");
+    if (baptised === "YES") {
+      if (!/^\d{4}$/.test(val("baptism_year"))) errors.push("Year of baptism");
+      if (!val("baptism_church")) errors.push("Church you were baptised in");
+    }
+    if (baptised === "NO" && !radio("baptism_interest")) errors.push("Whether you'd like to be baptised in 3:16 Church");
+    if (!$("agree").checked) errors.push("Declaration agreement");
+    if (!$("consent").checked) errors.push("Personal data consent");
+    if (pad.isEmpty()) errors.push("Signature");
+    return errors;
+  }
+
+  function collectData() {
+    const baptised = radio("baptised");
+    const marital = maritalSel.value === "Others" ? `OTHERS: ${val("marital_other")}` : maritalSel.value;
+    return {
+      name: upper(val("name")),
+      address: val("address"),
+      contact: val("contact"),
+      dob: dobToDMY(val("dob")),
+      marital,
+      family: val("family") || "N.A.",
+      baptised,
+      baptism_year: baptised === "YES" ? val("baptism_year") : "",
+      baptism_church: baptised === "YES" ? val("baptism_church") : "",
+      baptism_interest: baptised === "NO" ? radio("baptism_interest") : "",
+      signed_name: upper(val("name")),
+      date: todayDMY,
+      agree: $("agree").checked,
+      soft_copy: $("soft_copy").checked,
+    };
+  }
+
+  function bytesToBase64(bytes) {
+    let bin = "";
+    const chunk = 0x8000;
+    for (let i = 0; i < bytes.length; i += chunk) {
+      bin += String.fromCharCode.apply(null, bytes.subarray(i, i + chunk));
+    }
+    return btoa(bin);
+  }
+
+  // ---- Submit --------------------------------------------------------------
+  form.addEventListener("submit", async (ev) => {
+    ev.preventDefault();
+    const errors = validate();
+    if (errors.length) {
+      setStatus("Please complete: " + errors.join(", ") + ".", "error");
+      return;
+    }
+
+    submitBtn.disabled = true;
+    setStatus("Preparing your form…");
+    try {
+      const ref = makeRef();
+      const data = { ...collectData(), ref };
+
+      const [templateRes, layoutRes, sigRes] = await Promise.all([
+        fetch("form-template.pdf"),
+        fetch("field-coordinates.json"),
+        fetch(pad.toDataURL("image/png")),
+      ]);
+      if (!templateRes.ok || !layoutRes.ok) throw new Error("Form template could not be loaded.");
+      const templateBytes = new Uint8Array(await templateRes.arrayBuffer());
+      const layout = await layoutRes.json();
+      const signaturePng = new Uint8Array(await sigRes.arrayBuffer());
+
+      const pdfBytes = await window.MembershipPdf.fillMembershipPdf(PDFLib, templateBytes, layout, data, signaturePng);
+
+      setStatus("Sending…");
+      const payload = {
+        token: CONFIG.TOKEN,
+        website: $("website").value,
+        ref,
+        name: data.name,
+        email: val("email"),
+        contact: data.contact,
+        submittedAt: new Date().toISOString(),
+        filename: `Membership-${ref}.pdf`,
+        pdfBase64: bytesToBase64(pdfBytes),
+      };
+
+      // text/plain avoids a CORS preflight, which Apps Script web apps don't answer.
+      const res = await fetch(CONFIG.APPS_SCRIPT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(payload),
+      });
+      let result;
+      try {
+        result = await res.json();
+      } catch (_) {
+        throw new Error("The form could not reach the church's system. Check the Apps Script URL in index.html.");
+      }
+      if (!result.ok) throw new Error(result.error || "The church's system did not accept the form.");
+
+      setStatus(
+        result.emailed
+          ? "Thank you. Your signed form has been emailed to you and to the church."
+          : "Thank you. Your form was received. The church will contact you by email.",
+        "ok"
+      );
+      form.reset();
+      pad.clear();
+      $("marital_other").classList.add("hidden");
+      $("baptised-yes").classList.add("hidden");
+      $("baptised-no").classList.add("hidden");
+
+      const url = URL.createObjectURL(new Blob([pdfBytes], { type: "application/pdf" }));
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = payload.filename;
+      a.textContent = "Download your copy (PDF)";
+      $("download-wrap").replaceChildren(a);
+    } catch (err) {
+      setStatus("Sorry, something went wrong: " + err.message + " Please try again or contact the church.", "error");
+    } finally {
+      submitBtn.disabled = false;
+    }
+  });
+})();
+</script>
+</body>
+</html>

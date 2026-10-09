@@ -1,0 +1,23 @@
+{
+  "_note": "Positions measured from form-template.pdf (A4, 595 x 842 pt). x and y are measured from the TOP-LEFT of the page, y is the text baseline. fill-pdf.js converts to PDF coordinates.",
+  "text": [
+    { "key": "name",            "page": 1, "x": 70,    "y": 223,   "maxWidth": 430, "size": 11 },
+    { "key": "address",         "page": 1, "x": 70,    "y": 313,   "maxWidth": 430, "size": 11 },
+    { "key": "contact",         "page": 1, "x": 70,    "y": 403,   "maxWidth": 430, "size": 11 },
+    { "key": "dob",             "page": 1, "x": 70,    "y": 475,   "maxWidth": 430, "size": 11 },
+    { "key": "marital",         "page": 1, "x": 70,    "y": 583,   "maxWidth": 430, "size": 11 },
+    { "key": "family",          "page": 1, "x": 70,    "y": 690,   "maxWidth": 430, "size": 11 },
+    { "key": "baptised",        "page": 2, "x": 305,   "y": 117,   "maxWidth": 200, "size": 11 },
+    { "key": "baptism_year",    "page": 2, "x": 178,   "y": 197,   "maxWidth": 320, "size": 11 },
+    { "key": "baptism_church",  "page": 2, "x": 310,   "y": 237.5, "maxWidth": 200, "size": 11 },
+    { "key": "baptism_interest","page": 2, "x": 79,    "y": 359,   "maxWidth": 320, "size": 11 },
+    { "key": "signed_name",     "page": 2, "x": 78,    "y": 559,   "maxWidth": 175, "size": 8  },
+    { "key": "date",            "page": 2, "x": 340,   "y": 560,   "maxWidth": 170, "size": 10 },
+    { "key": "ref",             "page": 2, "x": 72,    "y": 800,   "maxWidth": 450, "size": 7  }
+  ],
+  "checks": [
+    { "key": "agree",     "page": 2, "x": 79.6, "y": 486 },
+    { "key": "soft_copy", "page": 2, "x": 75.4, "y": 650 }
+  ],
+  "signature": { "page": 2, "x": 80, "top": 508, "width": 170, "height": 44 }
+}
